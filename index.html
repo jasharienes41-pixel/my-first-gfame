@@ -241,7 +241,7 @@
     // ── Gameplay ──────────────────────────────
     const canvas = document.getElementById('game-canvas');
     const ctx = canvas.getContext('2d');
-    let player, stars, enemies, particles, score, shields, invulnTimer, screenShake, keys;
+    let player, stars, enemies, particles, score, shields, invulnTimer, screenShake, mouseX, mouseY;
 
     function startGame() {
       document.getElementById('selection-screen').style.display = 'none';
@@ -255,12 +255,16 @@
       const s = CHAR_STATS[selectedCharKey];
       player = { x: canvas.width / 2, y: canvas.height / 2, ...s };
       stars = []; enemies = []; particles = [];
-      score = 0; shields = MAX_SHIELDS; invulnTimer = 0; screenShake = 0; keys = {};
+      score = 0; shields = MAX_SHIELDS; invulnTimer = 0; screenShake = 0;
+      mouseX = canvas.width / 2; mouseY = canvas.height / 2;
 
-      window._scKeyDown = e => keys[e.key] = true;
-      window._scKeyUp   = e => keys[e.key] = false;
-      window.addEventListener('keydown', window._scKeyDown);
-      window.addEventListener('keyup', window._scKeyUp);
+      window._scMouseMove = e => {
+        const rect = canvas.getBoundingClientRect();
+        mouseX = e.clientX - rect.left;
+        mouseY = e.clientY - rect.top;
+      };
+      canvas.addEventListener('mousemove', window._scMouseMove);
+      canvas.style.cursor = 'none';
 
       gameLoop();
     }
@@ -345,11 +349,17 @@
       ctx.save();
       ctx.translate(shakeX, shakeY);
 
-      // ── Input ───────────────────────────────
-      if (keys['ArrowUp']    || keys['w'] || keys['W']) player.y = Math.max(player.radius, player.y - player.speed);
-      if (keys['ArrowDown']  || keys['s'] || keys['S']) player.y = Math.min(canvas.height - player.radius, player.y + player.speed);
-      if (keys['ArrowLeft']  || keys['a'] || keys['A']) player.x = Math.max(player.radius, player.x - player.speed);
-      if (keys['ArrowRight'] || keys['d'] || keys['D']) player.x = Math.min(canvas.width - player.radius, player.x + player.speed);
+      // ── Input (mouse follow) ────────────────
+      const mdx = mouseX - player.x;
+      const mdy = mouseY - player.y;
+      const mdist = Math.hypot(mdx, mdy);
+      if (mdist > 4) {
+        const step = Math.min(mdist, player.speed);
+        player.x += (mdx / mdist) * step;
+        player.y += (mdy / mdist) * step;
+      }
+      player.x = Math.max(player.radius, Math.min(canvas.width - player.radius, player.x));
+      player.y = Math.max(player.radius, Math.min(canvas.height - player.radius, player.y));
 
       // Invulnerability timer
       if (invulnTimer > 0) invulnTimer -= 0.016;
@@ -373,6 +383,12 @@
         ctx.shadowColor = invulnTimer > 0 ? '#ff4757' : player.color;
         ctx.shadowBlur = 15; ctx.fill(); ctx.shadowBlur = 0;
       }
+
+      // ── Mouse crosshair ──────────────────────
+      ctx.strokeStyle = 'rgba(255,255,255,0.35)'; ctx.lineWidth = 1;
+      const cs = 8;
+      ctx.beginPath(); ctx.moveTo(mouseX - cs, mouseY); ctx.lineTo(mouseX + cs, mouseY); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(mouseX, mouseY - cs); ctx.lineTo(mouseX, mouseY + cs); ctx.stroke();
 
       // ── Stars ───────────────────────────────
       stars.forEach((star, i) => {
@@ -499,9 +515,9 @@
     // ── End Game ──────────────────────────────
     function endGame() {
       cancelAnimationFrame(gameLoopId);
-      if (window._scKeyDown) window.removeEventListener('keydown', window._scKeyDown);
-      if (window._scKeyUp)   window.removeEventListener('keyup', window._scKeyUp);
-      window._scKeyDown = window._scKeyUp = null;
+      if (window._scMouseMove) canvas.removeEventListener('mousemove', window._scMouseMove);
+      window._scMouseMove = null;
+      canvas.style.cursor = '';
       playSound(120, 'sawtooth', 0.6, 0.15);
 
       document.getElementById('game-container').style.display = 'none';
