@@ -10,16 +10,11 @@
       --accent-cyan: #00f0ff;
       --accent-gold: #ffd700;
       --accent-magenta: #ff007f;
+      --danger-red: #ff4757;
       --text-light: #f0f4f8;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
     body {
       background-color: var(--bg-dark);
@@ -31,169 +26,90 @@
       overflow: hidden;
     }
 
-    /* Animated background canvas */
-    #bg-canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-    }
+    #bg-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
 
-    /* Container Glassmorphism Card */
     .game-card {
-      position: relative;
-      z-index: 10;
-      width: 90%;
-      max-width: 700px;
-      background: rgba(15, 14, 33, 0.75);
-      backdrop-filter: blur(12px);
+      position: relative; z-index: 10; width: 90%; max-width: 700px;
+      background: rgba(15, 14, 33, 0.75); backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.1);
       box-shadow: 0 0 40px rgba(0, 240, 255, 0.15);
-      border-radius: 20px;
-      padding: 30px;
-      text-align: center;
+      border-radius: 20px; padding: 30px; text-align: center;
     }
 
     h1.title {
-      font-size: 2.2rem;
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      margin-bottom: 25px;
+      font-size: 2.2rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 25px;
       background: linear-gradient(135deg, #fff, var(--accent-cyan));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       text-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
     }
-
-    /* Character Selection Screen */
-    .character-container {
-      display: flex;
-      justify-content: space-around;
-      gap: 15px;
-      margin: 30px 0;
-      flex-wrap: wrap;
+    .title.danger {
+      background: linear-gradient(135deg, #fff, var(--danger-red));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 15px rgba(255, 71, 87, 0.5);
     }
+
+    .character-container { display: flex; justify-content: space-around; gap: 15px; margin: 30px 0; flex-wrap: wrap; }
 
     .char-card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; cursor: pointer;
       transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      padding: 15px;
-      border-radius: 16px;
-      border: 2px solid transparent;
-      width: 140px;
+      padding: 15px; border-radius: 16px; border: 2px solid transparent; width: 140px;
     }
-
-    .char-card:hover {
-      transform: translateY(-8px);
-    }
+    .char-card:hover { transform: translateY(-8px); }
 
     .char-circle {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      margin-bottom: 12px;
-      position: relative;
-      transition: box-shadow 0.3s ease;
+      width: 80px; height: 80px; border-radius: 50%; margin-bottom: 12px;
+      position: relative; transition: box-shadow 0.3s ease;
     }
+    .explorer .char-circle { background: radial-gradient(circle at 30% 30%, #a2f9ff, var(--accent-cyan)); box-shadow: 0 0 15px var(--accent-cyan); }
+    .scout .char-circle    { background: radial-gradient(circle at 30% 30%, #fff3a3, var(--accent-gold));   box-shadow: 0 0 15px var(--accent-gold); }
+    .pilot .char-circle    { background: radial-gradient(circle at 30% 30%, #ff94cb, var(--accent-magenta)); box-shadow: 0 0 15px var(--accent-magenta); }
 
-    /* Character specific colors & glows */
-    .explorer .char-circle {
-      background: radial-gradient(circle at 30% 30%, #a2f9ff, var(--accent-cyan));
-      box-shadow: 0 0 15px var(--accent-cyan);
-    }
-    .scout .char-circle {
-      background: radial-gradient(circle at 30% 30%, #fff3a3, var(--accent-gold));
-      box-shadow: 0 0 15px var(--accent-gold);
-    }
-    .pilot .char-circle {
-      background: radial-gradient(circle at 30% 30%, #ff94cb, var(--accent-magenta));
-      box-shadow: 0 0 15px var(--accent-magenta);
-    }
+    .char-name { font-size: 1.1rem; font-weight: 600; letter-spacing: 1px; }
+    .char-desc { font-size: 0.75rem; color: #a0aab5; margin-top: 5px; }
 
-    .char-name {
-      font-size: 1.1rem;
-      font-weight: 600;
-      letter-spacing: 1px;
-    }
-
-    .char-desc {
-      font-size: 0.75rem;
-      color: #a0aab5;
-      margin-top: 5px;
-    }
-
-    /* Selected state */
-    .char-card.selected {
-      background: rgba(255, 255, 255, 0.05);
-      transform: scale(1.08);
-    }
+    .char-card.selected { background: rgba(255, 255, 255, 0.05); transform: scale(1.08); }
     .char-card.explorer.selected { border-color: var(--accent-cyan); }
-    .char-card.scout.selected { border-color: var(--accent-gold); }
-    .char-card.pilot.selected { border-color: var(--accent-magenta); }
+    .char-card.scout.selected    { border-color: var(--accent-gold); }
+    .char-card.pilot.selected    { border-color: var(--accent-magenta); }
 
-    /* Button */
     .btn {
-      padding: 14px 40px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      background: #2a2d3d;
-      color: #6c757d;
-      box-shadow: none;
+      padding: 14px 40px; font-size: 1.1rem; font-weight: bold; text-transform: uppercase;
+      letter-spacing: 2px; border: none; border-radius: 30px; cursor: pointer;
+      transition: all 0.3s ease; background: #2a2d3d; color: #6c757d; box-shadow: none;
     }
-
     .btn.active {
       background: linear-gradient(135deg, var(--accent-cyan), #0077ff);
-      color: #fff;
-      cursor: pointer;
-      box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+      color: #fff; box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
     }
+    .btn.active:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(0, 240, 255, 0.8); }
+    .btn.active.danger {
+      background: linear-gradient(135deg, var(--danger-red), #c0392b);
+      box-shadow: 0 0 20px rgba(255, 71, 87, 0.5);
+    }
+    .btn.active.danger:hover { box-shadow: 0 0 30px rgba(255, 71, 87, 0.8); }
 
-    .btn.active:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 30px rgba(0, 240, 255, 0.8);
-    }
-
-    /* Gameplay HUD & Canvas */
-    #game-container {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-    }
+    #game-container { display: none; flex-direction: column; align-items: center; }
 
     .hud {
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-      margin-bottom: 10px;
-      font-size: 1.1rem;
-      font-weight: bold;
+      display: flex; justify-content: space-between; align-items: center;
+      width: 100%; margin-bottom: 10px; font-size: 1rem; font-weight: bold;
     }
+    .hud .score { color: var(--accent-gold); }
+    .shields { display: flex; gap: 6px; }
+    .shield-dot {
+      width: 16px; height: 16px; border-radius: 50%;
+      background: var(--accent-cyan); box-shadow: 0 0 8px var(--accent-cyan);
+      transition: all 0.3s ease;
+    }
+    .shield-dot.lost { background: #333; box-shadow: none; }
 
     #game-canvas {
-      width: 100%;
-      height: 400px;
-      background: rgba(5, 5, 15, 0.8);
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      width: 100%; height: 400px; background: rgba(5, 5, 15, 0.8);
+      border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    /* Game Over Overlay */
-    #game-over {
-      display: none;
-      flex-direction: column;
-      gap: 15px;
-    }
+    #game-over { display: none; flex-direction: column; gap: 15px; }
   </style>
 </head>
 <body>
@@ -204,65 +120,79 @@
     <!-- Screen 1: Selection -->
     <div id="selection-screen">
       <h1 class="title">Choose Your Character</h1>
-
       <div class="character-container">
         <div class="char-card explorer" onclick="selectCharacter('explorer')">
           <div class="char-circle"></div>
           <div class="char-name">Explorer</div>
           <div class="char-desc">Large Magnet Radius</div>
         </div>
-
         <div class="char-card scout" onclick="selectCharacter('scout')">
           <div class="char-circle"></div>
           <div class="char-name">Scout</div>
           <div class="char-desc">Super Fast Speed</div>
         </div>
-
         <div class="char-card pilot" onclick="selectCharacter('pilot')">
           <div class="char-circle"></div>
           <div class="char-name">Pilot</div>
           <div class="char-desc">Bonus Score Multiplier</div>
         </div>
       </div>
-
       <button id="start-btn" class="btn" disabled onclick="startGame()">Start Game</button>
     </div>
 
     <!-- Screen 2: Gameplay -->
     <div id="game-container">
       <div class="hud">
-        <div>Score: <span id="score-val" style="color: var(--accent-gold);">0</span></div>
-        <div>Time: <span id="time-val" style="color: var(--accent-cyan);">30</span>s</div>
+        <div>Score: <span id="score-val" class="score">0</span></div>
+        <div class="shields" id="shields-display">
+          <div class="shield-dot"></div>
+          <div class="shield-dot"></div>
+          <div class="shield-dot"></div>
+        </div>
       </div>
       <canvas id="game-canvas"></canvas>
     </div>
 
     <!-- Screen 3: Game Over -->
     <div id="game-over">
-      <h1 class="title">Mission Complete!</h1>
-      <p style="font-size: 1.3rem;">Total Stars Collected: <strong id="final-score" style="color: var(--accent-gold);">0</strong></p>
-      <button class="btn active" onclick="resetToSelect()" style="margin-top: 15px;">Play Again</button>
+      <h1 class="title danger" id="go-title">Ship Destroyed!</h1>
+      <p style="font-size: 1.3rem;">Stars Collected: <strong id="final-score" style="color: var(--accent-gold);">0</strong></p>
+      <button id="play-again-btn" class="btn active danger" style="margin-top: 15px;">Play Again</button>
     </div>
   </div>
 
   <script>
-    // --- Audio Synthesis (Web Audio API) ---
+    // ── Audio ──────────────────────────────────
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playSound(freq, type, duration) {
+    function playSound(freq, type, duration, vol=0.1) {
       if (audioCtx.state === 'suspended') audioCtx.resume();
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
       osc.type = type;
       osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + duration);
+      gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+      osc.connect(gain).connect(audioCtx.destination);
+      osc.start(); osc.stop(audioCtx.currentTime + duration);
+    }
+    function sfxDamage() {
+      const t = audioCtx.currentTime;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      // Low buzz + explosion
+      for (let i = 0; i < 3; i++) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(80 + i * 30, t + i * 0.04);
+        osc.frequency.linearRampToValueAtTime(40, t + 0.3);
+        gain.gain.setValueAtTime(0.12, t + i * 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+        osc.connect(gain).connect(audioCtx.destination);
+        osc.start(t + i * 0.04); osc.stop(t + 0.35);
+      }
     }
 
-    // --- Background Stars Effect ---
+    // ── Background Stars ───────────────────────
     const bgCanvas = document.getElementById('bg-canvas');
     const bgCtx = bgCanvas.getContext('2d');
     let bgStars = [];
@@ -271,223 +201,326 @@
       bgCanvas.width = window.innerWidth;
       bgCanvas.height = window.innerHeight;
       bgStars = Array.from({ length: 120 }, () => ({
-        x: Math.random() * bgCanvas.width,
-        y: Math.random() * bgCanvas.height,
-        size: Math.random() * 2,
-        speed: Math.random() * 0.5 + 0.1
+        x: Math.random() * bgCanvas.width, y: Math.random() * bgCanvas.height,
+        size: Math.random() * 2, speed: Math.random() * 0.5 + 0.1
       }));
     }
-
     function renderBg() {
-      bgCtx.fillStyle = '#080711';
-      bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
-      bgCtx.fillStyle = '#ffffff';
-      bgStars.forEach(star => {
-        bgCtx.beginPath();
-        bgCtx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-        bgCtx.fill();
-        star.y += star.speed;
-        if (star.y > bgCanvas.height) star.y = 0;
+      bgCtx.fillStyle = '#080711'; bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+      bgCtx.fillStyle = '#fff';
+      bgStars.forEach(s => {
+        bgCtx.beginPath(); bgCtx.arc(s.x, s.y, s.size, 0, Math.PI * 2); bgCtx.fill();
+        s.y += s.speed; if (s.y > bgCanvas.height) s.y = 0;
       });
       requestAnimationFrame(renderBg);
     }
     window.addEventListener('resize', initBg);
-    initBg();
-    renderBg();
+    initBg(); renderBg();
 
-    // --- Character & Game Config ---
+    // ── Character Config ──────────────────────
     const CHAR_STATS = {
       explorer: { color: '#00f0ff', speed: 6, radius: 25, magnetRadius: 90, scoreMult: 1 },
       scout:    { color: '#ffd700', speed: 9, radius: 18, magnetRadius: 40, scoreMult: 1 },
       pilot:    { color: '#ff007f', speed: 7, radius: 22, magnetRadius: 50, scoreMult: 1.5 }
     };
+    const MAX_SHIELDS = 3;
+    const INVULN_TIME = 1.5;
 
-    let selectedCharKey = null;
-    let gameLoopId = null;
-    let timerInterval = null;
+    let selectedCharKey = null, gameLoopId = null;
 
-    // --- Selection UI Logic ---
+    // ── Selection ─────────────────────────────
     function selectCharacter(key) {
       selectedCharKey = key;
-      document.querySelectorAll('.char-card').forEach(card => card.classList.remove('selected'));
+      document.querySelectorAll('.char-card').forEach(c => c.classList.remove('selected'));
       document.querySelector(`.char-card.${key}`).classList.add('selected');
-
       const btn = document.getElementById('start-btn');
-      btn.disabled = false;
-      btn.classList.add('active');
+      btn.disabled = false; btn.classList.add('active');
       playSound(440, 'sine', 0.1);
     }
 
-    // --- Gameplay Logic ---
+    // ── Gameplay ──────────────────────────────
     const canvas = document.getElementById('game-canvas');
     const ctx = canvas.getContext('2d');
-
-    let player, stars, particles, score, timeLeft, keys;
+    let player, stars, enemies, particles, score, shields, invulnTimer, screenShake, keys;
 
     function startGame() {
       document.getElementById('selection-screen').style.display = 'none';
       document.getElementById('game-container').style.display = 'flex';
+      document.getElementById('score-val').innerText = '0';
+      updateShieldDOM();
 
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
 
-      const stats = CHAR_STATS[selectedCharKey];
-      player = {
-        x: canvas.width / 2,
-        y: canvas.height / 2,
-        ...stats
-      };
+      const s = CHAR_STATS[selectedCharKey];
+      player = { x: canvas.width / 2, y: canvas.height / 2, ...s };
+      stars = []; enemies = []; particles = [];
+      score = 0; shields = MAX_SHIELDS; invulnTimer = 0; screenShake = 0; keys = {};
 
-      stars = [];
-      particles = [];
-      score = 0;
-      timeLeft = 30;
-      keys = {};
-
-      document.getElementById('score-val').innerText = '0';
-      document.getElementById('time-val').innerText = timeLeft;
-
-      // Named handlers so we can clean them up later
       window._scKeyDown = e => keys[e.key] = true;
       window._scKeyUp   = e => keys[e.key] = false;
       window.addEventListener('keydown', window._scKeyDown);
       window.addEventListener('keyup', window._scKeyUp);
 
-      timerInterval = setInterval(() => {
-        timeLeft--;
-        document.getElementById('time-val').innerText = timeLeft;
-        if (timeLeft <= 0) endGame();
-      }, 1000);
-
       gameLoop();
     }
 
+    function updateShieldDOM() {
+      const dots = document.querySelectorAll('#shields-display .shield-dot');
+      dots.forEach((d, i) => d.classList.toggle('lost', i >= shields));
+    }
+
+    // ── Spawning ──────────────────────────────
     function spawnStar() {
       if (stars.length < 7) {
         stars.push({
           x: Math.random() * (canvas.width - 40) + 20,
           y: Math.random() * (canvas.height - 40) + 20,
-          radius: 8,
-          pulse: 0
+          radius: 8, pulse: 0
         });
       }
     }
 
-    function createParticles(x, y, color) {
-      for (let i = 0; i < 12; i++) {
+    function spawnEnemy() {
+      const types = ['asteroid'];
+      if (score >= 200) types.push('hunter');
+      if (score >= 400) types.push('flare');
+      const type = types[Math.floor(Math.random() * types.length)];
+
+      if (type === 'asteroid') {
+        const fromEdge = Math.random() < 0.5;
+        enemies.push({
+          type: 'asteroid',
+          x: fromEdge ? (Math.random() < 0.5 ? -30 : canvas.width + 30) : Math.random() * canvas.width,
+          y: fromEdge ? Math.random() * canvas.height : (Math.random() < 0.5 ? -30 : canvas.height + 30),
+          vx: (Math.random() - 0.5) * 1.5,
+          vy: (Math.random() - 0.5) * 1.5,
+          radius: 18 + Math.random() * 14,
+          rotation: Math.random() * Math.PI * 2,
+          rotSpeed: (Math.random() - 0.5) * 0.04
+        });
+      } else if (type === 'hunter') {
+        const edge = Math.floor(Math.random() * 4);
+        let x, y;
+        if (edge === 0)      { x = Math.random() * canvas.width; y = -30; }
+        else if (edge === 1) { x = canvas.width + 30; y = Math.random() * canvas.height; }
+        else if (edge === 2) { x = Math.random() * canvas.width; y = canvas.height + 30; }
+        else                 { x = -30; y = Math.random() * canvas.height; }
+        enemies.push({
+          type: 'hunter', x, y, vx: 0, vy: 0, radius: 14, speed: 1.8 + Math.random() * 1.2, angle: 0
+        });
+      } else if (type === 'flare') {
+        enemies.push({
+          type: 'flare',
+          x: 50 + Math.random() * (canvas.width - 100),
+          y: 50 + Math.random() * (canvas.height - 100),
+          radius: 12, pulseTimer: 0, pulseInterval: 2 + Math.random() * 3,
+          dangerRadius: 0, maxDanger: 60 + Math.random() * 50,
+          phase: Math.random() * Math.PI * 2
+        });
+      }
+    }
+
+    // ── Particles ─────────────────────────────
+    function createParticles(x, y, color, count=12, speed=6) {
+      for (let i = 0; i < count; i++) {
         particles.push({
-          x, y,
-          vx: (Math.random() - 0.5) * 6,
-          vy: (Math.random() - 0.5) * 6,
-          life: 1,
-          color
+          x, y, vx: (Math.random() - 0.5) * speed * 2, vy: (Math.random() - 0.5) * speed * 2,
+          life: 1, color
         });
       }
     }
 
+    // ── Game Loop ─────────────────────────────
     function gameLoop() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Handle Inputs
-      if (keys['ArrowUp'] || keys['w'] || keys['W']) player.y = Math.max(player.radius, player.y - player.speed);
-      if (keys['ArrowDown'] || keys['s'] || keys['S']) player.y = Math.min(canvas.height - player.radius, player.y + player.speed);
-      if (keys['ArrowLeft'] || keys['a'] || keys['A']) player.x = Math.max(player.radius, player.x - player.speed);
+      // Screen shake offset
+      let shakeX = 0, shakeY = 0;
+      if (screenShake > 0) {
+        shakeX = (Math.random() - 0.5) * screenShake * 8;
+        shakeY = (Math.random() - 0.5) * screenShake * 8;
+        screenShake = Math.max(0, screenShake - 0.05);
+      }
+      ctx.save();
+      ctx.translate(shakeX, shakeY);
+
+      // ── Input ───────────────────────────────
+      if (keys['ArrowUp']    || keys['w'] || keys['W']) player.y = Math.max(player.radius, player.y - player.speed);
+      if (keys['ArrowDown']  || keys['s'] || keys['S']) player.y = Math.min(canvas.height - player.radius, player.y + player.speed);
+      if (keys['ArrowLeft']  || keys['a'] || keys['A']) player.x = Math.max(player.radius, player.x - player.speed);
       if (keys['ArrowRight'] || keys['d'] || keys['D']) player.x = Math.min(canvas.width - player.radius, player.x + player.speed);
 
-      // Render Player Magnet Ring
+      // Invulnerability timer
+      if (invulnTimer > 0) invulnTimer -= 0.016;
+
+      // ── Spawning ────────────────────────────
+      if (Math.random() < 0.04) spawnStar();
+      const maxEnemies = 3 + Math.floor(score / 150);
+      if (enemies.length < maxEnemies && Math.random() < 0.015) spawnEnemy();
+
+      // ── Player magnet ring ──────────────────
       ctx.beginPath();
       ctx.arc(player.x, player.y, player.magnetRadius, 0, Math.PI * 2);
-      ctx.strokeStyle = player.color + '33';
-      ctx.lineWidth = 2;
-      ctx.stroke();
+      ctx.strokeStyle = player.color + '33'; ctx.lineWidth = 2; ctx.stroke();
 
-      // Render Player
-      ctx.beginPath();
-      ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
-      ctx.fillStyle = player.color;
-      ctx.shadowColor = player.color;
-      ctx.shadowBlur = 15;
-      ctx.fill();
-      ctx.shadowBlur = 0;
+      // ── Draw player ─────────────────────────
+      const blink = invulnTimer > 0 && Math.floor(invulnTimer * 10) % 2 === 0;
+      if (!blink) {
+        ctx.beginPath();
+        ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+        ctx.fillStyle = invulnTimer > 0 ? '#ff4757' : player.color;
+        ctx.shadowColor = invulnTimer > 0 ? '#ff4757' : player.color;
+        ctx.shadowBlur = 15; ctx.fill(); ctx.shadowBlur = 0;
+      }
 
-      // Spawn Stars randomly
-      if (Math.random() < 0.05) spawnStar();
-
-      // Process Stars
-      stars.forEach((star, index) => {
-        // Magnet attraction
-        const dx = player.x - star.x;
-        const dy = player.y - star.y;
-        const dist = Math.hypot(dx, dy);
-
-        if (dist < player.magnetRadius) {
-          star.x += (dx / dist) * 4;
-          star.y += (dy / dist) * 4;
+      // ── Stars ───────────────────────────────
+      stars.forEach((star, i) => {
+        const dx = player.x - star.x, dy = player.y - star.y, dist = Math.hypot(dx, dy);
+        if (dist < player.magnetRadius && dist > 0) {
+          star.x += (dx / dist) * 4; star.y += (dy / dist) * 4;
         }
-
-        // Collection Check
         if (dist < player.radius + star.radius) {
           createParticles(star.x, star.y, '#ffd700');
           playSound(600 + Math.random() * 200, 'triangle', 0.15);
           score += Math.round(10 * player.scoreMult);
           document.getElementById('score-val').innerText = score;
-          stars.splice(index, 1);
+          stars.splice(i, 1);
         }
-
-        // Draw Star
         star.pulse += 0.05;
-        const currentRadius = star.radius + Math.sin(star.pulse) * 2;
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, currentRadius, 0, Math.PI * 2);
-        ctx.fillStyle = '#ffd700';
-        ctx.shadowColor = '#ffd700';
-        ctx.shadowBlur = 10;
-        ctx.fill();
-        ctx.shadowBlur = 0;
+        const cr = star.radius + Math.sin(star.pulse) * 2;
+        ctx.beginPath(); ctx.arc(star.x, star.y, cr, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffd700'; ctx.shadowColor = '#ffd700'; ctx.shadowBlur = 10;
+        ctx.fill(); ctx.shadowBlur = 0;
       });
 
-      // Process Particles
-      particles.forEach((p, index) => {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life -= 0.04;
-        if (p.life <= 0) {
-          particles.splice(index, 1);
-        } else {
+      // ── Enemies ─────────────────────────────
+      enemies.forEach((e, i) => {
+        if (e.type === 'asteroid') {
+          e.x += e.vx; e.y += e.vy; e.rotation += e.rotSpeed;
+          if (e.x < -40 || e.x > canvas.width + 40 || e.y < -40 || e.y > canvas.height + 40) {
+            enemies.splice(i, 1); return;
+          }
+          // Draw jagged asteroid
+          ctx.save(); ctx.translate(e.x, e.y); ctx.rotate(e.rotation);
+          ctx.fillStyle = '#ff4757'; ctx.shadowColor = '#ff4757'; ctx.shadowBlur = 12;
           ctx.beginPath();
-          ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
-          ctx.fillStyle = p.color;
-          ctx.globalAlpha = p.life;
-          ctx.fill();
-          ctx.globalAlpha = 1;
+          const spikes = 7;
+          for (let j = 0; j < spikes; j++) {
+            const a = (j / spikes) * Math.PI * 2;
+            const r = j % 2 === 0 ? e.radius : e.radius * 0.6;
+            const sx = Math.cos(a) * r, sy = Math.sin(a) * r;
+            j === 0 ? ctx.moveTo(sx, sy) : ctx.lineTo(sx, sy);
+          }
+          ctx.closePath(); ctx.fill(); ctx.shadowBlur = 0; ctx.restore();
+        }
+        else if (e.type === 'hunter') {
+          // Track player
+          const dx = player.x - e.x, dy = player.y - e.y;
+          const dist = Math.hypot(dx, dy) || 1;
+          e.vx = (dx / dist) * e.speed; e.vy = (dy / dist) * e.speed;
+          e.x += e.vx; e.y += e.vy;
+          e.angle = Math.atan2(dy, dx);
+          // Draw drone triangle
+          ctx.save(); ctx.translate(e.x, e.y); ctx.rotate(e.angle);
+          ctx.fillStyle = '#ff6b81'; ctx.shadowColor = '#ff6b81'; ctx.shadowBlur = 10;
+          ctx.beginPath();
+          ctx.moveTo(e.radius, 0);
+          ctx.lineTo(-e.radius * 0.7, -e.radius * 0.6);
+          ctx.lineTo(-e.radius * 0.7, e.radius * 0.6);
+          ctx.closePath(); ctx.fill(); ctx.shadowBlur = 0;
+          // Eye
+          ctx.fillStyle = '#fff'; ctx.beginPath();
+          ctx.arc(e.radius * 0.35, 0, e.radius * 0.2, 0, Math.PI * 2); ctx.fill();
+          ctx.restore();
+        }
+        else if (e.type === 'flare') {
+          e.pulseTimer += 0.016;
+          const cycle = (e.pulseTimer % e.pulseInterval) / e.pulseInterval; // 0→1
+          if (cycle < 0.7) {
+            // Charging: small glow
+            e.dangerRadius = 0;
+            const pulse = Math.sin(cycle * Math.PI / 0.7) * 5;
+            ctx.beginPath(); ctx.arc(e.x, e.y, e.radius + pulse, 0, Math.PI * 2);
+            ctx.fillStyle = '#ff9f43'; ctx.shadowColor = '#ff9f43'; ctx.shadowBlur = pulse * 3;
+            ctx.fill(); ctx.shadowBlur = 0;
+          } else {
+            // Detonation: expanding danger zone
+            const detPhase = (cycle - 0.7) / 0.3; // 0→1
+            e.dangerRadius = e.maxDanger * detPhase;
+            const alpha = 1 - detPhase;
+            ctx.beginPath(); ctx.arc(e.x, e.y, e.dangerRadius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255,71,87,${alpha * 0.3})`; ctx.fill();
+            ctx.strokeStyle = `rgba(255,71,87,${alpha})`; ctx.lineWidth = 2; ctx.stroke();
+            // Core
+            ctx.beginPath(); ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
+            ctx.fillStyle = '#ff4757'; ctx.shadowColor = '#ff4757'; ctx.shadowBlur = 20;
+            ctx.fill(); ctx.shadowBlur = 0;
+          }
+        }
+
+        // ── Collision check ────────────────────
+        const pdx = player.x - e.x, pdy = player.y - e.y;
+        const pdist = Math.hypot(pdx, pdy);
+        const hitRadius = e.type === 'flare' && e.dangerRadius > 0
+          ? e.dangerRadius
+          : e.radius;
+        if (pdist < player.radius + hitRadius) {
+          if (invulnTimer <= 0) {
+            shields--;
+            updateShieldDOM();
+            invulnTimer = INVULN_TIME;
+            screenShake = 1;
+            createParticles(e.x, e.y, '#ff4757', 20, 8);
+            createParticles(e.x, e.y, '#ff9f43', 15, 6);
+            sfxDamage();
+
+            if (shields <= 0) {
+              endGame();
+              return;
+            }
+          }
+          enemies.splice(i, 1);
         }
       });
 
+      // ── Particles ───────────────────────────
+      particles.forEach((p, i) => {
+        p.x += p.vx; p.y += p.vy; p.life -= 0.03;
+        if (p.life <= 0) { particles.splice(i, 1); return; }
+        ctx.beginPath(); ctx.arc(p.x, p.y, 3 * p.life, 0, Math.PI * 2);
+        ctx.fillStyle = p.color; ctx.globalAlpha = p.life; ctx.fill(); ctx.globalAlpha = 1;
+      });
+
+      ctx.restore();
       gameLoopId = requestAnimationFrame(gameLoop);
     }
 
+    // ── End Game ──────────────────────────────
     function endGame() {
       cancelAnimationFrame(gameLoopId);
-      clearInterval(timerInterval);
       if (window._scKeyDown) window.removeEventListener('keydown', window._scKeyDown);
       if (window._scKeyUp)   window.removeEventListener('keyup', window._scKeyUp);
       window._scKeyDown = window._scKeyUp = null;
-      playSound(200, 'sawtooth', 0.4);
+      playSound(120, 'sawtooth', 0.6, 0.15);
 
       document.getElementById('game-container').style.display = 'none';
       document.getElementById('game-over').style.display = 'flex';
+      document.getElementById('go-title').textContent = 'Ship Destroyed!';
       document.getElementById('final-score').innerText = score;
+      document.getElementById('play-again-btn').addEventListener('click', resetToSelect, { once: true });
     }
 
+    // ── Reset ─────────────────────────────────
     function resetToSelect() {
       document.getElementById('game-over').style.display = 'none';
       document.getElementById('selection-screen').style.display = 'block';
-      // Reset selection state
       selectedCharKey = null;
-      document.querySelectorAll('.char-card').forEach(card => card.classList.remove('selected'));
+      document.querySelectorAll('.char-card').forEach(c => c.classList.remove('selected'));
       const btn = document.getElementById('start-btn');
-      btn.disabled = true;
-      btn.classList.remove('active');
+      btn.disabled = true; btn.classList.remove('active');
+      shields = MAX_SHIELDS;
+      document.querySelectorAll('#shields-display .shield-dot').forEach(d => d.classList.remove('lost'));
     }
   </script>
 </body>
