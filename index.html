@@ -53,28 +53,39 @@
     .char-card {
       display: flex; flex-direction: column; align-items: center; cursor: pointer;
       transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      padding: 15px; border-radius: 16px; border: 2px solid transparent; width: 140px;
+      padding: 18px 12px; border-radius: 18px; border: 2px solid transparent; width: 140px;
+      background: rgba(255,255,255,0.02);
     }
-    .char-card:hover { transform: translateY(-8px); }
+    .char-card:hover { transform: translateY(-8px); background: rgba(255,255,255,0.05); }
 
     .char-circle {
       width: 80px; height: 80px; border-radius: 50%; margin-bottom: 12px;
       object-fit: cover; object-position: center top;
       border: 3px solid rgba(255,255,255,0.15);
-      transition: all 0.3s ease;
+      transition: all 0.35s ease;
       background: rgba(255,255,255,0.05);
     }
     .char-card.selected .char-circle {
-      transform: scale(1.08);
+      transform: scale(1.1);
+      box-shadow: 0 0 24px currentColor;
     }
+    .char-card.explorer .char-circle { border-color: rgba(0,240,255,0.3); }
+    .char-card.scout    .char-circle { border-color: rgba(255,215,0,0.3); }
+    .char-card.pilot    .char-circle { border-color: rgba(255,0,127,0.3); }
+    .char-card.explorer.selected .char-circle { border-color: var(--accent-cyan); box-shadow: 0 0 28px var(--accent-cyan); color: var(--accent-cyan); }
+    .char-card.scout.selected    .char-circle { border-color: var(--accent-gold); box-shadow: 0 0 28px var(--accent-gold); color: var(--accent-gold); }
+    .char-card.pilot.selected    .char-circle { border-color: var(--accent-magenta); box-shadow: 0 0 28px var(--accent-magenta); color: var(--accent-magenta); }
 
-    .char-name { font-size: 1.1rem; font-weight: 600; letter-spacing: 1px; }
-    .char-desc { font-size: 0.75rem; color: #a0aab5; margin-top: 5px; }
+    .char-name { font-size: 1.1rem; font-weight: 700; letter-spacing: 1px; transition: color 0.3s; }
+    .char-desc { font-size: 0.72rem; color: #6b7d95; margin-top: 4px; line-height: 1.3; }
 
-    .char-card.selected { background: rgba(255, 255, 255, 0.05); transform: scale(1.08); }
+    .char-card.selected { background: rgba(255, 255, 255, 0.06); transform: scale(1.08); }
     .char-card.explorer.selected { border-color: var(--accent-cyan); }
     .char-card.scout.selected    { border-color: var(--accent-gold); }
     .char-card.pilot.selected    { border-color: var(--accent-magenta); }
+    .char-card.explorer.selected .char-name { color: var(--accent-cyan); }
+    .char-card.scout.selected    .char-name { color: var(--accent-gold); }
+    .char-card.pilot.selected    .char-name { color: var(--accent-magenta); }
 
     .btn {
       padding: 14px 40px; font-size: 1.1rem; font-weight: bold; text-transform: uppercase;
