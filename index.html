@@ -75,7 +75,6 @@
     .char-card.explorer.selected { border-color: var(--accent-cyan); }
     .char-card.scout.selected    { border-color: var(--accent-gold); }
     .char-card.pilot.selected    { border-color: var(--accent-magenta); }
-    .char-card.patrick.selected  { border-color: #a29bfe; }
 
     .btn {
       padding: 14px 40px; font-size: 1.1rem; font-weight: bold; text-transform: uppercase;
@@ -139,11 +138,6 @@
           <img class="char-circle" src="char-pilot.png" alt="Pilot">
           <div class="char-name">Pilot</div>
           <div class="char-desc">Bonus Score Multiplier</div>
-        </div>
-        <div class="char-card patrick" onclick="selectCharacter('patrick')">
-          <img class="char-circle" src="char-patrick.png" alt="Patrick">
-          <div class="char-name">Patrick</div>
-          <div class="char-desc">Lucky Charm ✨</div>
         </div>
       </div>
       <button id="start-btn" class="btn" disabled onclick="startGame()">Start Game</button>
@@ -231,8 +225,7 @@
     const CHAR_STATS = {
       explorer: { color: '#00f0ff', speed: 6, radius: 25, magnetRadius: 90, scoreMult: 1 },
       scout:    { color: '#ffd700', speed: 9, radius: 18, magnetRadius: 40, scoreMult: 1 },
-      pilot:    { color: '#ff007f', speed: 7, radius: 22, magnetRadius: 50, scoreMult: 1.5 },
-      patrick:  { color: '#a29bfe', speed: 7, radius: 22, magnetRadius: 65, scoreMult: 1.2 }
+      pilot:    { color: '#ff007f', speed: 7, radius: 22, magnetRadius: 50, scoreMult: 1.5 }
     };
     const MAX_SHIELDS = 3;
     const INVULN_TIME = 1.5;
