@@ -230,6 +230,10 @@
     const MAX_SHIELDS = 3;
     const INVULN_TIME = 1.5;
 
+    // ── Gameplay background image ──────────────
+    const bgImg = new Image();
+    bgImg.src = 'bg-space.jpg';
+
     let selectedCharKey = null, gameLoopId = null;
 
     // ── Selection ─────────────────────────────
@@ -341,7 +345,11 @@
 
     // ── Game Loop ─────────────────────────────
     function gameLoop() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (bgImg.complete && bgImg.naturalWidth > 0) {
+        ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
 
       // Screen shake offset
       let shakeX = 0, shakeY = 0;
