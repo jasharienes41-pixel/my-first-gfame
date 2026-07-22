@@ -168,6 +168,10 @@
 
   <canvas id="bg-canvas"></canvas>
   <audio id="bgm" loop src="bgm.mp3"></audio>
+  <audio id="sfxDamage1" src="sfx-damage-1.mp3"></audio>
+  <audio id="sfxDamage2" src="sfx-damage-2.mp3"></audio>
+  <audio id="sfxCollect1" src="sfx-collect-1.mp3"></audio>
+  <audio id="sfxCollect2" src="sfx-collect-2.mp3"></audio>
 
   <div class="game-card">
     <!-- Volume control -->
@@ -262,6 +266,20 @@
         osc.connect(gain).connect(audioCtx.destination);
         osc.start(t + i * 0.04); osc.stop(t + 0.35);
       }
+    }
+
+    // ── SFX helpers ─────────────────────────────
+    function playDamageSfx() {
+      const snd = Math.random() < 0.5
+        ? document.getElementById('sfxDamage1')
+        : document.getElementById('sfxDamage2');
+      snd.currentTime = 0; snd.play().catch(()=>{});
+    }
+    function playCollectSfx() {
+      const snd = Math.random() < 0.5
+        ? document.getElementById('sfxCollect1')
+        : document.getElementById('sfxCollect2');
+      snd.currentTime = 0; snd.play().catch(()=>{});
     }
 
     // ── BGM + Volume ────────────────────────────
@@ -520,7 +538,7 @@
         }
         if (dist < player.radius + star.radius) {
           createParticles(star.x, star.y, '#ffd700');
-          playSound(600 + Math.random() * 200, 'triangle', 0.15);
+          playCollectSfx();
           score += Math.round(10 * player.scoreMult);
           document.getElementById('score-val').innerText = score;
           // Milestone check
@@ -619,7 +637,7 @@
             screenShake = 1;
             createParticles(e.x, e.y, '#ff4757', 20, 8);
             createParticles(e.x, e.y, '#ff9f43', 15, 6);
-            sfxDamage();
+            playDamageSfx();
 
             if (shields <= 0) {
               endGame();
