@@ -139,20 +139,42 @@
     .upgrade-cards { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
     .up-card {
       background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1);
-      border-radius: 14px; padding: 16px 14px; width: 130px; cursor: pointer;
+      border-radius: 14px; padding: 14px 10px; width: 105px; cursor: pointer;
       text-align: center; transition: all 0.25s;
     }
     .up-card:hover { border-color: var(--accent-gold); background: rgba(255,215,0,0.08); transform: translateY(-3px); }
     .up-icon { font-size: 2rem; margin-bottom: 6px; }
     .up-label { font-weight: 700; font-size: 0.95rem; color: #fff; }
     .up-desc  { font-size: 0.7rem; color: #8899aa; margin-top: 3px; }
+
+    /* ── Volume control ── */
+    .volume-ctrl {
+      position: absolute; top: 12px; right: 16px; z-index: 30;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .volume-ctrl input[type=range] {
+      width: 80px; accent-color: var(--accent-cyan);
+      background: rgba(255,255,255,0.1); height: 4px; border-radius: 2px;
+      cursor: pointer;
+    }
+    .volume-ctrl .mute-btn {
+      background: none; border: none; color: #8899aa; font-size: 1.2rem;
+      cursor: pointer; padding: 2px; line-height: 1;
+    }
+    .volume-ctrl .mute-btn:hover { color: #fff; }
   </style>
 </head>
 <body>
 
   <canvas id="bg-canvas"></canvas>
+  <audio id="bgm" loop src="bgm.mp3"></audio>
 
   <div class="game-card">
+    <!-- Volume control -->
+    <div class="volume-ctrl">
+      <button class="mute-btn" id="mute-btn" onclick="toggleMute()">🔊</button>
+      <input type="range" id="vol-slider" min="0" max="100" value="40" oninput="setVolume(this.value)">
+    </div>
     <!-- Screen 1: Selection -->
     <div id="selection-screen">
       <h1 class="title">Choose Your Character</h1>
@@ -180,11 +202,7 @@
     <div id="game-container">
       <div class="hud">
         <div>Score: <span id="score-val" class="score">0</span></div>
-        <div class="shields" id="shields-display">
-          <div class="shield-dot"></div>
-          <div class="shield-dot"></div>
-          <div class="shield-dot"></div>
-        </div>
+        <div class="shields" id="shields-display"></div>
       </div>
       <canvas id="game-canvas"></canvas>
       <!-- Upgrade overlay -->
@@ -199,6 +217,9 @@
           </div>
           <div class="up-card" data-upgrade="magnet">
             <div class="up-icon">🧲</div><div class="up-label">+Magnet</div><div class="up-desc">Wider pull</div>
+          </div>
+          <div class="up-card" data-upgrade="mult">
+            <div class="up-icon">💎</div><div class="up-label">x1.3 Score</div><div class="up-desc">More points</div>
           </div>
         </div>
       </div>
@@ -242,6 +263,32 @@
         osc.start(t + i * 0.04); osc.stop(t + 0.35);
       }
     }
+
+    // ── BGM + Volume ────────────────────────────
+    const bgm = document.getElementById('bgm');
+    bgm.volume = 0.4;
+
+    function setVolume(v) {
+      bgm.volume = v / 100;
+      document.getElementById('mute-btn').textContent = v == 0 ? '🔇' : '🔊';
+    }
+
+    let muted = false;
+    function toggleMute() {
+      muted = !muted;
+      if (muted) {
+        bgm.volume = 0;
+        document.getElementById('mute-btn').textContent = '🔇';
+      } else {
+        bgm.volume = document.getElementById('vol-slider').value / 100;
+        document.getElementById('mute-btn').textContent = '🔊';
+      }
+    }
+
+    // Start BGM on first user interaction
+    document.addEventListener('click', function startBgm() {
+      bgm.play().catch(()=>{});
+    }, { once: true });
 
     // ── Background Stars ───────────────────────
     const bgCanvas = document.getElementById('bg-canvas');
@@ -328,8 +375,13 @@
     }
 
     function updateShieldDOM() {
-      const dots = document.querySelectorAll('#shields-display .shield-dot');
-      dots.forEach((d, i) => d.classList.toggle('lost', i >= shields));
+      const container = document.getElementById('shields-display');
+      container.innerHTML = '';
+      for (let i = 0; i < shields; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'shield-dot';
+        container.appendChild(dot);
+      }
     }
 
     // ── Spawning ──────────────────────────────
@@ -614,7 +666,7 @@
       const btn = document.getElementById('start-btn');
       btn.disabled = true; btn.classList.remove('active');
       shields = MAX_SHIELDS;
-      document.querySelectorAll('#shields-display .shield-dot').forEach(d => d.classList.remove('lost'));
+      updateShieldDOM();
     }
 
     // ── Upgrade system ─────────────────────────
@@ -644,6 +696,9 @@
       } else if (up === 'magnet') {
         player.magnetRadius += 25;
         createParticles(player.x, player.y, '#ff007f', 16, 6);
+      } else if (up === 'mult') {
+        player.scoreMult *= 1.3;
+        createParticles(player.x, player.y, '#ffd700', 20, 8);
       }
       playSound(800, 'sine', 0.2);
       playSound(1200, 'sine', 0.15);
