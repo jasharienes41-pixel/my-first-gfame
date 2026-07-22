@@ -92,7 +92,7 @@
     }
     .btn.active.danger:hover { box-shadow: 0 0 30px rgba(255, 71, 87, 0.8); }
 
-    #game-container { display: none; flex-direction: column; align-items: center; }
+    #game-container { display: none; flex-direction: column; align-items: center; position: relative; }
 
     .hud {
       display: flex; justify-content: space-between; align-items: center;
@@ -113,6 +113,28 @@
     }
 
     #game-over { display: none; flex-direction: column; gap: 15px; }
+
+    /* ── Upgrade overlay ── */
+    #upgrade-overlay {
+      display: none; position: absolute; inset: 0; z-index: 20;
+      background: rgba(5,5,18,0.85); backdrop-filter: blur(6px);
+      flex-direction: column; align-items: center; justify-content: center;
+      border-radius: 20px; gap: 12px;
+    }
+    #upgrade-overlay h2 {
+      color: var(--accent-gold); font-size: 1.4rem; letter-spacing: 2px;
+      text-transform: uppercase; margin-bottom: 4px;
+    }
+    .upgrade-cards { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+    .up-card {
+      background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 14px; padding: 16px 14px; width: 130px; cursor: pointer;
+      text-align: center; transition: all 0.25s;
+    }
+    .up-card:hover { border-color: var(--accent-gold); background: rgba(255,215,0,0.08); transform: translateY(-3px); }
+    .up-icon { font-size: 2rem; margin-bottom: 6px; }
+    .up-label { font-weight: 700; font-size: 0.95rem; color: #fff; }
+    .up-desc  { font-size: 0.7rem; color: #8899aa; margin-top: 3px; }
   </style>
 </head>
 <body>
@@ -154,6 +176,21 @@
         </div>
       </div>
       <canvas id="game-canvas"></canvas>
+      <!-- Upgrade overlay -->
+      <div id="upgrade-overlay">
+        <h2>⭐ Upgrade! ⭐</h2>
+        <div class="upgrade-cards">
+          <div class="up-card" data-upgrade="shield">
+            <div class="up-icon">🛡️</div><div class="up-label">+1 Shield</div><div class="up-desc">Extra life</div>
+          </div>
+          <div class="up-card" data-upgrade="speed">
+            <div class="up-icon">⚡</div><div class="up-label">+Speed</div><div class="up-desc">Move faster</div>
+          </div>
+          <div class="up-card" data-upgrade="magnet">
+            <div class="up-icon">🧲</div><div class="up-label">+Magnet</div><div class="up-desc">Wider pull</div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Screen 3: Game Over -->
@@ -250,6 +287,7 @@
     const canvas = document.getElementById('game-canvas');
     const ctx = canvas.getContext('2d');
     let player, stars, enemies, particles, score, shields, invulnTimer, screenShake, mouseX, mouseY;
+    let nextMilestone = 200;
 
     function startGame() {
       document.getElementById('selection-screen').style.display = 'none';
@@ -264,6 +302,7 @@
       player = { x: canvas.width / 2, y: canvas.height / 2, ...s };
       stars = []; enemies = []; particles = [];
       score = 0; shields = MAX_SHIELDS; invulnTimer = 0; screenShake = 0;
+      nextMilestone = 200;
       mouseX = canvas.width / 2; mouseY = canvas.height / 2;
 
       window._scMouseMove = e => {
@@ -421,6 +460,11 @@
           playSound(600 + Math.random() * 200, 'triangle', 0.15);
           score += Math.round(10 * player.scoreMult);
           document.getElementById('score-val').innerText = score;
+          // Milestone check
+          if (score >= nextMilestone) {
+            nextMilestone += 200;
+            pauseForUpgrade();
+          }
           stars.splice(i, 1);
         }
         star.pulse += 0.05;
@@ -561,6 +605,39 @@
       shields = MAX_SHIELDS;
       document.querySelectorAll('#shields-display .shield-dot').forEach(d => d.classList.remove('lost'));
     }
+
+    // ── Upgrade system ─────────────────────────
+    function pauseForUpgrade() {
+      cancelAnimationFrame(gameLoopId);
+      canvas.style.cursor = '';
+      document.getElementById('upgrade-overlay').style.display = 'flex';
+    }
+
+    function resumeGame() {
+      document.getElementById('upgrade-overlay').style.display = 'none';
+      canvas.style.cursor = 'none';
+      gameLoop();
+    }
+
+    document.getElementById('upgrade-overlay').addEventListener('click', e => {
+      const card = e.target.closest('.up-card');
+      if (!card) return;
+      const up = card.dataset.upgrade;
+      if (up === 'shield') {
+        shields = Math.min(shields + 1, 5);
+        updateShieldDOM();
+        createParticles(player.x, player.y, '#00f0ff', 16, 6);
+      } else if (up === 'speed') {
+        player.speed += 1.5;
+        createParticles(player.x, player.y, '#ffd700', 16, 6);
+      } else if (up === 'magnet') {
+        player.magnetRadius += 25;
+        createParticles(player.x, player.y, '#ff007f', 16, 6);
+      }
+      playSound(800, 'sine', 0.2);
+      playSound(1200, 'sine', 0.15);
+      resumeGame();
+    });
   </script>
 </body>
 </html>
