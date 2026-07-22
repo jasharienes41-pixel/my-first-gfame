@@ -319,7 +319,7 @@
         else if (edge === 2) { x = Math.random() * canvas.width; y = canvas.height + 30; }
         else                 { x = -30; y = Math.random() * canvas.height; }
         enemies.push({
-          type: 'hunter', x, y, vx: 0, vy: 0, radius: 14, speed: 1.8 + Math.random() * 1.2, angle: 0
+          type: 'hunter', x, y, vx: 0, vy: 0, radius: 14, speed: 1.8 + Math.random() * 1.2, angle: 0, life: 8 + Math.random() * 6
         });
       } else if (type === 'flare') {
         enemies.push({
@@ -457,6 +457,9 @@
           e.vx = (dx / dist) * e.speed; e.vy = (dy / dist) * e.speed;
           e.x += e.vx; e.y += e.vy;
           e.angle = Math.atan2(dy, dx);
+          // Lifetime
+          e.life -= 0.016;
+          if (e.life <= 0) { createParticles(e.x, e.y, '#ff6b81', 8, 4); enemies.splice(i, 1); return; }
           // Draw drone triangle
           ctx.save(); ctx.translate(e.x, e.y); ctx.rotate(e.angle);
           ctx.fillStyle = '#ff6b81'; ctx.shadowColor = '#ff6b81'; ctx.shadowBlur = 10;
